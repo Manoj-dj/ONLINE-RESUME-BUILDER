@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder - Welcome</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container-fluid landing-page">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="/">Resume Builder</a>
+        </nav>
+
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6 text-center">
+                    <h1 class="display-4 mb-4">Welcome to Resume Builder</h1>
+                    <p class="lead mb-5">Please select your role to continue</p>
+                    <div class="role-selection">
+                        <button class="btn btn-primary btn-lg mr-3" onclick="redirectToLogin('user')">
+                            Continue as User
+                        </button>
+                        <button class="btn btn-secondary btn-lg" onclick="redirectToLogin('admin')">
+                            Continue as Admin
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

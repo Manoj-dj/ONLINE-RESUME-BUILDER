@@ -1,0 +1,184 @@
+/* Global Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Landing Page */
+.landing-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+/* Navbar Styles */
+.navbar {
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+    padding: 1.5rem;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-control {
+    border-radius: 5px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+}
+
+/* Button Styles */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Resume Template Styles */
+.template-card {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.template-card:hover {
+    transform: translateY(-5px);
+}
+
+.template-preview {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+/* Dashboard Styles */
+.dashboard-container {
+    padding: 2rem;
+}
+
+.resume-preview {
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card {
+        margin: 1rem;
+    }
+    
+    .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .navbar {
+        padding: 0.5rem 1rem;
+    }
+}
+
+/* Animation Styles */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+/* Add these styles for better error display */
+.invalid-feedback {
+    display: block;
+    color: #dc3545;
+    font-size: 80%;
+    margin-top: 0.25rem;
+}
+
+.is-invalid {
+    border-color: #dc3545;
+}
+
+.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Add animation for form transitions */
+.card {
+    transition: opacity 0.3s ease-in-out;
+}
+
+.d-none {
+    opacity: 0;
+}
+
+/* Add styles for timestamp display */
+.timestamp {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-top: 0.5rem;
+}

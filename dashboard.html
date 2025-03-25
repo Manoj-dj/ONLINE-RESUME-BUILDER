@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - Resume Builder</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        .sidebar {
+            height: 100vh;
+            background-color: #343a40;
+            padding-top: 20px;
+            position: fixed;
+            left: 0;
+        }
+        
+        .sidebar-sticky {
+            position: relative;
+            top: 0;
+            height: calc(100vh - 48px);
+            padding-top: .5rem;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .sidebar .nav-link {
+            color: #fff;
+            padding: 10px 20px;
+            margin: 5px 0;
+            transition: 0.3s;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: #495057;
+            border-radius: 5px;
+        }
+
+        .sidebar .nav-link.active {
+            background-color: #007bff;
+            border-radius: 5px;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            padding: 20px;
+            padding-top: 80px; /* Account for fixed navbar */
+        }
+
+        .timestamp {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .notification {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .user-info {
+            padding: 15px;
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .resume-card {
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .resume-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">Resume Builder</a>
+        <ul class="navbar-nav ml-auto d-flex flex-row">
+            <li class="nav-item mr-3">
+                <span class="nav-link">
+                    <i class="far fa-clock"></i>
+                    <span id="currentTime"></span>
+                </span>
+            </li>
+            <li class="nav-item mr-3">
+                <span class="nav-link">
+                    <i class="fas fa-user"></i>
+                    <span id="currentUser"></span>
+                </span>
+            </li>
+            <li class="nav-item">
+                <button onclick="handleLogout()" class="btn btn-outline-light">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="col-md-2 d-none d-md-block sidebar">
+        <div class="user-info">
+            <div id="userDisplayName"></div>
+            <small class="timestamp" id="loginTime"></small>
+        </div>
+        <div class="sidebar-sticky">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#dashboard">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#create-resume">
+                        <i class="fas fa-plus-circle"></i> Create Resume
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#my-resumes">
+                        <i class="fas fa-file-alt"></i> My Resumes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#profile">
+                        <i class="fas fa-user-circle"></i> Profile
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container-fluid">
+            <!-- Welcome Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2>Welcome Back!</h2>
+                    <p class="text-muted">Here's an overview of your resume building progress.</p>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Resumes</h5>
+                            <h2 class="card-text" id="totalResumes">0</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Downloads</h5>
+                            <h2 class="card-text" id="totalDownloads">0</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Last Updated</h5>
+                            <h2 class="card-text" id="lastUpdated">-</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Resumes -->
+            <div class="row" id="recentResumes">
+                <!-- Resume cards will be dynamically added here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Notification Area -->
+    <div id="notificationArea" class="notification"></div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <script>
+        // Global variables
+        const CURRENT_USER = 'Manoj-dj';
+        let lastUpdateTime = new Date();
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeDashboard();
+            setupEventListeners();
+            loadUserData();
+        });
+
+        function initializeDashboard() {
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+            updateUserInfo();
+            loadDashboardData();
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+            const formatted = formatDateTime(now);
+            document.getElementById('currentTime').textContent = formatted;
+        }
+
+        function formatDateTime(date) {
+            return date.toISOString().replace('T', ' ').slice(0, 19);
+        }
+
+        function updateUserInfo() {
+            const username = sessionStorage.getItem('username') || CURRENT_USER;
+            document.getElementById('currentUser').textContent = username;
+            document.getElementById('userDisplayName').textContent = username;
+            document.getElementById('loginTime').textContent = `Login: ${sessionStorage.getItem('loginTime') || formatDateTime(new Date())}`;
+        }
+
+        async function handleLogout() {
+            try {
+                const response = await fetch('/api/auth/logout', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Clear session storage
+                    sessionStorage.clear();
+                    localStorage.clear();
+                    
+                    // Show success message
+                    showNotification('Logout successful. Redirecting...', 'success');
+                    
+                    // Redirect to home page after a short delay
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1500);
+                } else {
+                    showNotification('Logout failed. Please try again.', 'danger');
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+                showNotification('Logout failed. Please try again.', 'danger');
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} alert-dismissible fade show`;
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+            `;
+            
+            const notificationArea = document.getElementById('notificationArea');
+            notificationArea.appendChild(notification);
+
+            // Remove notification after 5 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        async function loadDashboardData() {
+            try {
+                // Simulate loading data (replace with actual API calls)
+                document.getElementById('totalResumes').textContent = '3';
+                document.getElementById('totalDownloads').textContent = '12';
+                document.getElementById('lastUpdated').textContent = formatDateTime(new Date());
+
+                // Add sample resume cards
+                const recentResumes = document.getElementById('recentResumes');
+                recentResumes.innerHTML = `
+                    <div class="col-md-4">
+                        <div class="card resume-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Professional Resume</h5>
+                                <p class="card-text">Last modified: ${formatDateTime(new Date())}</p>
+                                <button class="btn btn-primary">Edit</button>
+                                <button class="btn btn-success">Download</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                showNotification('Dashboard updated successfully', 'success');
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                showNotification('Failed to load dashboard data', 'danger');
+            }
+        }
+
+        function setupEventListeners() {
+            // Add event listeners for sidebar navigation
+            document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                });
+            });
+        }
+
+        // Check session status periodically
+        setInterval(async () => {
+            try {
+                const response = await fetch('/api/auth/check-session', {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                if (!data.isLoggedIn) {
+                    window.location.href = '/login';
+                }
+            } catch (error) {
+                console.error('Session check error:', error);
+            }
+        }, 300000); // Check every 5 minutes
+    </script>
+</body>
+</html>

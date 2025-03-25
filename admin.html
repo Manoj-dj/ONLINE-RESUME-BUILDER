@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Resume Builder</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        .sidebar {
+            height: 100vh;
+            background-color: #343a40;
+            padding-top: 20px;
+            position: fixed;
+            left: 0;
+        }
+        
+        .sidebar-sticky {
+            position: relative;
+            top: 0;
+            height: calc(100vh - 48px);
+            padding-top: .5rem;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .sidebar .nav-link {
+            color: #fff;
+            padding: 10px 20px;
+            margin: 5px 0;
+            transition: 0.3s;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: #495057;
+            border-radius: 5px;
+        }
+
+        .sidebar .nav-link.active {
+            background-color: #007bff;
+            border-radius: 5px;
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            padding: 20px;
+        }
+
+        .card {
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .timestamp {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .user-info {
+            font-size: 0.9rem;
+            color: #fff;
+            padding: 10px 20px;
+            border-bottom: 1px solid #495057;
+            margin-bottom: 20px;
+        }
+
+        #notificationPanel {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">Resume Builder Admin</a>
+        <ul class="navbar-nav ml-auto d-flex flex-row">
+            <li class="nav-item mr-3">
+                <span class="nav-link">
+                    <i class="far fa-clock"></i>
+                    <span id="currentTime"></span>
+                </span>
+            </li>
+            <li class="nav-item mr-3">
+                <span class="nav-link">
+                    <i class="fas fa-user"></i>
+                    <span id="currentUser"></span>
+                </span>
+            </li>
+            <li class="nav-item">
+                <button onclick="handleLogout()" class="btn btn-outline-light">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar col-md-2 d-none d-md-block">
+        <div class="user-info">
+            <i class="fas fa-user-shield"></i> Administrator
+            <div class="timestamp" id="loginTime"></div>
+        </div>
+        <div class="sidebar-sticky">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#dashboard" onclick="showSection('dashboard')">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#users" onclick="showSection('users')">
+                        <i class="fas fa-users"></i> Users
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#resumes" onclick="showSection('resumes')">
+                        <i class="fas fa-file-alt"></i> Resumes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#settings" onclick="showSection('settings')">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main role="main" class="main-content">
+        <!-- Dashboard Section -->
+        <div id="dashboardSection" class="section active">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-tachometer-alt"></i> Dashboard Overview</h2>
+                <button class="btn btn-primary" onclick="refreshDashboard()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card stat-card bg-primary text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Users</h5>
+                            <h2 class="card-text" id="totalUsers">0</h2>
+                            <p class="mb-0"><small>Last updated: <span id="usersUpdateTime"></span></small></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card stat-card bg-success text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Active Resumes</h5>
+                            <h2 class="card-text" id="totalResumes">0</h2>
+                            <p class="mb-0"><small>Last updated: <span id="resumesUpdateTime"></span></small></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card stat-card bg-warning text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">New Users Today</h5>
+                            <h2 class="card-text" id="newUsers">0</h2>
+                            <p class="mb-0"><small>Last updated: <span id="newUsersUpdateTime"></span></small></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card stat-card bg-info text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">System Status</h5>
+                            <h2 class="card-text" id="systemStatus">Active</h2>
+                            <p class="mb-0"><small>Last checked: <span id="statusUpdateTime"></span></small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-history"></i> Recent Activity
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>User</th>
+                                    <th>Action</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activityLog">
+                                <!-- Activity logs will be dynamically added here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Panel -->
+        <div id="notificationPanel"></div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Current user and time management
+        const CURRENT_USER = 'Manoj-dj';
+        let lastUpdateTime = new Date();
+
+        function updateDateTime() {
+            const now = new Date();
+            const formatted = now.toISOString().replace('T', ' ').slice(0, 19);
+            document.getElementById('currentTime').textContent = formatted;
+            document.getElementById('loginTime').textContent = `Login: ${sessionStorage.getItem('loginTime') || formatted}`;
+        }
+
+        function initializeDashboard() {
+            // Set current user
+            document.getElementById('currentUser').textContent = sessionStorage.getItem('username') || CURRENT_USER;
+            
+            // Start time updates
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+
+            // Load initial data
+            refreshDashboard();
+
+            // Set up auto-refresh every 5 minutes
+            setInterval(refreshDashboard, 300000);
+        }
+
+        async function refreshDashboard() {
+            try {
+                // Update statistics
+                document.getElementById('totalUsers').textContent = '25';
+                document.getElementById('totalResumes').textContent = '42';
+                document.getElementById('newUsers').textContent = '3';
+                document.getElementById('systemStatus').textContent = 'Active';
+
+                // Update timestamps
+                const now = new Date().toISOString().replace('T', ' ').slice(0, 19);
+                document.getElementById('usersUpdateTime').textContent = now;
+                document.getElementById('resumesUpdateTime').textContent = now;
+                document.getElementById('newUsersUpdateTime').textContent = now;
+                document.getElementById('statusUpdateTime').textContent = now;
+
+                // Add sample activity log
+                addActivityLog('New user registered', 'user123', 'Success');
+                addActivityLog('Resume created', 'john_doe', 'Success');
+                addActivityLog('Password reset request', 'jane_smith', 'Pending');
+
+                showNotification('Dashboard refreshed successfully', 'success');
+            } catch (error) {
+                console.error('Refresh error:', error);
+                showNotification('Failed to refresh dashboard', 'danger');
+            }
+        }
+
+        function addActivityLog(action, user, status) {
+            const now = new Date().toISOString().replace('T', ' ').slice(0, 19);
+            const statusClass = status === 'Success' ? 'text-success' : 'text-warning';
+            
+            const row = `
+                <tr>
+                    <td>${now}</td>
+                    <td>${user}</td>
+                    <td>${action}</td>
+                    <td class="${statusClass}">${status}</td>
+                </tr>
+            `;
+            
+            const tbody = document.getElementById('activityLog');
+            tbody.innerHTML = row + tbody.innerHTML;
+
+            // Keep only last 10 entries
+            const rows = tbody.getElementsByTagName('tr');
+            while (rows.length > 10) {
+                tbody.removeChild(rows[rows.length - 1]);
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} alert-dismissible fade show`;
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+            `;
+            
+            const panel = document.getElementById('notificationPanel');
+            panel.appendChild(notification);
+
+            // Remove notification after 5 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        async function handleLogout() {
+            try {
+                const response = await fetch('/api/auth/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    sessionStorage.clear();
+                    window.location.href = '/';
+                } else {
+                    showNotification('Logout failed', 'danger');
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+                showNotification('Logout failed', 'danger');
+            }
+        }
+
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', initializeDashboard);
+    </script>
+</body>
+</html>

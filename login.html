@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder - Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="/">Resume Builder</a>
+        </nav>
+
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <!-- Login Card -->
+                    <div class="card" id="loginCard">
+                        <div class="card-header">
+                            <h3 class="text-center" id="loginTitle">User Login</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="loginForm" onsubmit="return handleLogin(event)">
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input type="text" class="form-control" id="username" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input type="password" class="form-control" id="password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-block">Login</button>
+                            </form>
+                            <div class="text-center mt-3">
+                                <a href="#" id="forgotPasswordToggle">Forgot Password?</a>
+                            </div>
+                            <div class="text-center mt-2">
+                                <a href="#" id="registerToggle">New User? Register here</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Registration Card -->
+                    <div class="card d-none" id="registerCard">
+                        <div class="card-header">
+                            <h3 class="text-center">Register</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="registerForm" onsubmit="return handleRegister(event)">
+                                <div class="form-group">
+                                    <label for="regUsername">Username</label>
+                                    <input type="text" class="form-control" id="regUsername" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="regEmail">Email</label>
+                                    <input type="email" class="form-control" id="regEmail" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="regPassword">Password</label>
+                                    <input type="password" class="form-control" id="regPassword" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="regConfirmPassword">Confirm Password</label>
+                                    <input type="password" class="form-control" id="regConfirmPassword" required>
+                                </div>
+                                <button type="submit" class="btn btn-success btn-block">Register</button>
+                            </form>
+                            <div class="text-center mt-3">
+                                <a href="#" id="loginToggle">Already have an account? Login here</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Forgot Password Card -->
+                    <div class="card d-none" id="forgotPasswordCard">
+                        <div class="card-header">
+                            <h3 class="text-center">Reset Password</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="forgotPasswordForm" onsubmit="return handleForgotPassword(event)">
+                                <div class="form-group">
+                                    <label for="resetEmail">Email</label>
+                                    <input type="email" class="form-control" id="resetEmail" required>
+                                </div>
+                                <button type="submit" class="btn btn-warning btn-block">Reset Password</button>
+                            </form>
+                            <div class="text-center mt-3">
+                                <a href="#" id="loginToggle2">Back to Login</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="../js/auth.js"></script>
+</body>
+</html>
